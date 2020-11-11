@@ -1,0 +1,11 @@
+{
+    "luci-app-vssr": {
+        "description": "Luci interface for the HelloWorld",
+        "read": {
+            "uci": [ "vssr" ]
+        },
+        "write": {
+            "uci": [ "vssr" ]
+        }
+    }
+}
