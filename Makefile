@@ -59,10 +59,10 @@ endef
 
 define Package/luci-app-vssr/conffiles
 	/etc/ssr_ip
-	/etc/dnsmasq.ssr/gfw_list.conf
+	/etc/dnsmasq.vssr/gfw_list.conf
 	/etc/china_ssr.txt
-	/etc/dnsmasq.ssr/gfw_list.conf
-	/etc/dnsmasq.ssr/gfw_base.conf
+	/etc/dnsmasq.vssr/gfw_list.conf
+	/etc/dnsmasq.vssr/gfw_base.conf
 	/etc/dnsmasq.oversea/oversea_list.conf
 endef
 

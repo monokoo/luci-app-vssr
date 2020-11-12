@@ -533,9 +533,9 @@ rules() {
 }
 
 start() {
-    if [ -z "$switch_server" ]; then
-        GLOBAL_SERVER=$(uci_get_by_type global global_server)
-    else
+    GLOBAL_SERVER=$(uci_get_by_type global global_server)
+    [ "$GLOBAL_SERVER" = "nil" ] && return 1
+    if [ -n "$switch_server" ]; then
         GLOBAL_SERVER=$switch_server
         switch_enable=1
     fi
@@ -543,19 +543,19 @@ start() {
     if rules; then
         start_redir
 
-        mkdir -p /tmp/dnsmasq.d && cp -a /etc/dnsmasq.ssr /tmp/ && cp -a /etc/dnsmasq.oversea /tmp/
+        mkdir -p /tmp/dnsmasq.d && cp -a /etc/dnsmasq.vssr /tmp/ && cp -a /etc/dnsmasq.oversea /tmp/
         if ! [ "$run_mode" = "oversea" ]; then
-            cat >/tmp/dnsmasq.d/dnsmasq-ssr.conf <<EOF
-conf-dir=/tmp/dnsmasq.ssr
+            cat >/tmp/dnsmasq.d/dnsmasq-vssr.conf <<EOF
+conf-dir=/tmp/dnsmasq.vssr
 EOF
         else
-            cat >/tmp/dnsmasq.d/dnsmasq-ssr.conf <<EOF
+            cat >/tmp/dnsmasq.d/dnsmasq-vssr.conf <<EOF
 conf-dir=/tmp/dnsmasq.oversea
 EOF
         fi
 
         if [ $(uci_get_by_type global adblock) = 0 ]; then
-            rm -f /tmp/dnsmasq.ssr/ad.conf
+            rm -f /tmp/dnsmasq.vssr/ad.conf
         fi
 
         /usr/share/vssr/gfw2ipset.sh
@@ -575,11 +575,11 @@ EOF
         fi
     fi
 
-    ENABLE_SERVER=$(uci_get_by_type global global_server)
-    [ "$ENABLE_SERVER" = "nil" ] && return 1
 }
 
 boot() {
+    ENABLE_SERVER=$(uci_get_by_type global global_server)
+    [ "$ENABLE_SERVER" = "nil" ] && return 1
     (/usr/share/vssr/chinaipset.sh && sleep 5 && start >/dev/null 2>&1) &
 }
 
@@ -600,8 +600,8 @@ stop() {
     fi
     killall -q -9 ss-redir ss-local obfs-local ssr-redir ssr-local ssr-server v2ray v2ray-plugin trojan microsocks ipt2socks dns2socks redsocks2 pdnsd
 
-    if [ -f "/tmp/dnsmasq.d/dnsmasq-ssr.conf" ]; then
-        rm -f /tmp/dnsmasq.d/dnsmasq-ssr.conf
+    if [ -f "/tmp/dnsmasq.d/dnsmasq-vssr.conf" ]; then
+        rm -f /tmp/dnsmasq.d/dnsmasq-vssr.conf
         /etc/init.d/dnsmasq restart >/dev/null 2>&1
     fi
     del_cron
