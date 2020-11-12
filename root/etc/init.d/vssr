@@ -533,13 +533,13 @@ rules() {
 }
 
 start() {
-    GLOBAL_SERVER=$(uci_get_by_type global global_server)
-    [ "$GLOBAL_SERVER" = "nil" ] && return 1
-    if [ -n "$switch_server" ]; then
+    if [ -z "$switch_server" ]; then
+        GLOBAL_SERVER=$(uci_get_by_type global global_server)
+    else
         GLOBAL_SERVER=$switch_server
         switch_enable=1
     fi
-
+    [ "$GLOBAL_SERVER" = "nil" ] && return 1
     if rules; then
         start_redir
 
