@@ -600,6 +600,13 @@ stop() {
     fi
     killall -q -9 ss-redir ss-local obfs-local ssr-redir ssr-local ssr-server v2ray v2ray-plugin trojan microsocks ipt2socks dns2socks redsocks2 pdnsd
 
+	ipset -F gfwlist >/dev/null 2>&1 &
+	ipset -X gfwlist >/dev/null 2>&1 &
+	ipset -F oversea >/dev/null 2>&1 &
+	ipset -X oversea >/dev/null 2>&1 &
+	ipset -F ss_spec_wan_ac >/dev/null 2>&1 &
+	ipset -X ss_spec_wan_ac >/dev/null 2>&1 &
+    
     if [ -f "/tmp/dnsmasq.d/dnsmasq-vssr.conf" ]; then
         rm -f /tmp/dnsmasq.d/dnsmasq-vssr.conf
         /etc/init.d/dnsmasq restart >/dev/null 2>&1
